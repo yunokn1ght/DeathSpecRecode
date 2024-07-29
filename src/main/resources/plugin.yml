@@ -1,0 +1,6 @@
+name: DeathSpecRecode
+version: '${version}'
+main: org.yuno.deathspec.DeathSpecRecode
+api-version: '1.21'
+authors: [yunokn1ght]
+description: Plugin that puts you in Spectator Mode when you die. 

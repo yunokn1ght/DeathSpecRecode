@@ -1,0 +1,18 @@
+death:
+  togglePlugin: true
+  toggleDeathMessage: true # Does the message sent after death
+  deathMessageType: 1 # 0 - Chat, 1 - Action Bar, 2 - Title, 3 - Subtitle
+  deathMessage: "You died, so you were transferred to Spectator Mode"
+  deathMessageColor: "#FFC300" # Message's color in HEX
+
+ban:
+  toggleBan: true # Does the player get banned after death
+  banTime: 8 # Time before ban in seconds
+  banMessage: "You'll be banned in {time} seconds" # Message sent to player
+  banMessageType: 1 # 0 - Chat, 1 - Action Bar, 2 - Title, 3 - Subtitle
+  banMessageColor: "#FF5733" # Message's color in HEX
+  banReason: "You're lost!" # Reason of ban
+  banReasonColor: "GOLD" # Reason's color (used org.bukkit.ChatColor)
+
+bannedPlayers:
+  - "Notch"
