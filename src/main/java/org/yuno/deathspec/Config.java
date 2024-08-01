@@ -18,6 +18,18 @@ public class Config {
     @Getter private static String banReason;
     @Getter private static String banReasonColor;
 
+    @Getter private static String noPermissionMessage;
+    @Getter private static String noPermissionColor;
+    @Getter private static String configReloadMessage;
+    @Getter private static String configReloadColor;
+    @Getter private static String zeroPlayerCount;
+    @Getter private static String zeroPlayerCountColor;
+    @Getter private static String unbannedPlayer;
+    @Getter private static String unbannedPlayerColor;
+    @Getter private static String playerIsntBanned;
+    @Getter private static String playerIsntBannedColor;
+
+
     public void ConfigCheck() {
         togglePlugin = DeathSpecRecode.getInstance().getConfig().getBoolean("death.togglePlugin");
         toggleBan = DeathSpecRecode.getInstance().getConfig().getBoolean("ban.toggleBan");
@@ -41,5 +53,21 @@ public class Config {
         } else {
             DeathSpecRecode.getInstance().getLogger().warning("You have disabled toggleBan, this means you won't be banned when you die.");
         }
+
+        noPermissionMessage = DeathSpecRecode.getInstance().getConfig().getString("messages.noPermissionMessage", "You don't have permission to do that!");
+        noPermissionColor = DeathSpecRecode.getInstance().getConfig().getString("messages.noPermissionColor", "#ff3630");
+
+        configReloadColor = DeathSpecRecode.getInstance().getConfig().getString("messages.configReloadColor", "#30ff36");
+        configReloadMessage = DeathSpecRecode.getInstance().getConfig().getString("messages.configReload", "Config reloaded!");
+
+        zeroPlayerCount = DeathSpecRecode.getInstance().getConfig().getString("messages.zeroPlayerCount", "Player count must be greater than zero!");
+        zeroPlayerCountColor = DeathSpecRecode.getInstance().getConfig().getString("messages.zeroPlayerCountColor", "#ff3630");
+
+        unbannedPlayer = DeathSpecRecode.getInstance().getConfig().getString("messages.unbannedPlayer", "Pardoned {playerName}!");
+        unbannedPlayerColor = DeathSpecRecode.getInstance().getConfig().getString("messages.unbannedPlayerColor", "#30ff36");
+
+        playerIsntBanned = DeathSpecRecode.getInstance().getConfig().getString("messages.playerIsntBanned", "{playerName} isn't banned!");
+        playerIsntBannedColor = DeathSpecRecode.getInstance().getConfig().getString("messages.playerIsntBannedColor", "#ff3630");
+
     }
 }

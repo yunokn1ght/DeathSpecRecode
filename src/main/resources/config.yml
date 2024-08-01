@@ -14,5 +14,22 @@ ban:
   banReason: "You're lost!" # Reason of ban
   banReasonColor: "GOLD" # Reason's color (used org.bukkit.ChatColor)
 
+messages:
+  noPermission: "You dont have enough permissions!"
+  noPermColor: "#ff3630"
+
+  configReload: "Config reloaded!"
+  configReloadColor: "#30ff36"
+
+  zeroPlayerCount: "Player count must be greater than zero!"
+  zeroPlayerCountColor: "#ff3630"
+
+  unbannedPlayer: "Pardoned {playerName}!"
+  unbannedPlayerColor: "#30ff36"
+
+  playerIsntBanned: "{playerName} isn't banned!"
+  playerIsntBannedColor: "#ff3630"
+
+
 bannedPlayers:
   - "Notch"

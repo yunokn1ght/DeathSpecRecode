@@ -15,6 +15,7 @@ public final class DeathSpecRecode extends JavaPlugin {
         instance = this;
         saveDefaultConfig();
         new Config().ConfigCheck();
+        getCommand("deathspec").setExecutor(new DeathSpecCommand());
 
         if(Config.isTogglePlugin()) {
             getServer().getPluginManager().registerEvents(new DeathListener(), this);
