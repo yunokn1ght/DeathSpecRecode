@@ -21,9 +21,6 @@ messages:
   configReload: "Config reloaded!"
   configReloadColor: "#30ff36"
 
-  zeroPlayerCount: "Player count must be greater than zero!"
-  zeroPlayerCountColor: "#ff3630"
-
   unbannedPlayer: "Pardoned {playerName}!"
   unbannedPlayerColor: "#30ff36"
 
