@@ -10,6 +10,8 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 @CommandAlias("deathspec")
 public class SpecCommands extends BaseCommand {
@@ -74,6 +76,22 @@ public class SpecCommands extends BaseCommand {
 
             DeathSpecRecode.getInstance().getConfig().set("bannedPlayers", banlist);
             DeathSpecRecode.getInstance().saveConfig();
+        }
+    }
+
+    @CommandPermission("deathspec.check")
+    @Subcommand("check")
+    public void check(Player p) {
+        List<String> banlist = DeathSpecRecode.getInstance().getConfig().getStringList("bannedPlayers");
+        if(!banlist.isEmpty()) for (Iterator<String> iterator = banlist.iterator(); iterator.hasNext();) {
+            String playerName = iterator.next();
+            if (!Bukkit.getBanList(BanListType.PROFILE).isBanned(Bukkit.getOfflinePlayer(playerName).getPlayerProfile())) {
+                iterator.remove();
+                DeathSpecRecode.getInstance().getLogger().info("Deleted " + playerName + " from banlist!");
+
+                DeathSpecRecode.getInstance().getConfig().set("bannedPlayers", banlist);
+                DeathSpecRecode.getInstance().saveConfig();
+            }
         }
     }
 }

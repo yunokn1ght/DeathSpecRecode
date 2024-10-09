@@ -8,6 +8,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.yuno.deathspec.helpers.TestCommands;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public final class DeathSpecRecode extends JavaPlugin {
 
@@ -29,15 +31,16 @@ public final class DeathSpecRecode extends JavaPlugin {
         getLogger().info("DeathSpec 2.0 has been enabled!");
 
         if(Config.isRemovePlayerFromBanlistOnRestart()) {
-            ArrayList<String> banlist = (ArrayList<String>) DeathSpecRecode.getInstance().getConfig().getStringList("bannedPlayers");
-            if(!banlist.isEmpty()) banlist.forEach(playerName -> {
+            List<String> banlist = DeathSpecRecode.getInstance().getConfig().getStringList("bannedPlayers");
+            if(!banlist.isEmpty()) for (Iterator<String> iterator = banlist.iterator(); iterator.hasNext();) {
+                String playerName = iterator.next();
                 if (!Bukkit.getBanList(BanListType.PROFILE).isBanned(Bukkit.getOfflinePlayer(playerName).getPlayerProfile())) {
-                    banlist.remove(playerName);
+                    iterator.remove();
                     getLogger().info("Deleted " + playerName + " from banlist!");
                     DeathSpecRecode.getInstance().getConfig().set("bannedPlayers", banlist);
                     DeathSpecRecode.getInstance().saveConfig();
                 }
-            });
+            }
         }
     }
 
