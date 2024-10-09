@@ -14,6 +14,9 @@ ban:
   banReason: "You're lost!" # Reason of ban
   banReasonColor: "GOLD" # Reason's color (used org.bukkit.ChatColor)
 
+plugin:
+  removePlayerFromBanlistOnRestart: true # Remove players from banlist if they aren't banned?
+
 messages:
   noPermission: "You dont have enough permissions!"
   noPermColor: "#ff3630"
@@ -26,6 +29,9 @@ messages:
 
   playerIsntBanned: "{playerName} isn't banned!"
   playerIsntBannedColor: "#ff3630"
+
+  listIsEmpty: "Banlist is empty!"
+  listIsEmptyColor: "#ff3630"
 
 
 bannedPlayers:

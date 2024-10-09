@@ -4,6 +4,8 @@ import lombok.Getter;
 
 public class Config {
 
+    // TODO: Replace this SHIT with ConfigAPI. It is necessary, but, kinda good
+
     @Getter private static boolean togglePlugin;
     @Getter private static boolean toggleDeathMessage;
     @Getter private static int deathMessageType;
@@ -22,17 +24,20 @@ public class Config {
     @Getter private static String noPermissionColor;
     @Getter private static String configReloadMessage;
     @Getter private static String configReloadColor;
-    @Getter private static String zeroPlayerCount;
-    @Getter private static String zeroPlayerCountColor;
     @Getter private static String unbannedPlayer;
     @Getter private static String unbannedPlayerColor;
     @Getter private static String playerIsntBanned;
     @Getter private static String playerIsntBannedColor;
+    @Getter private static String listIsEmpty;
+    @Getter private static String listIsEmptyColor;
+
+    @Getter private static boolean removePlayerFromBanlistOnRestart;
 
 
     public void ConfigCheck() {
         togglePlugin = DeathSpecRecode.getInstance().getConfig().getBoolean("death.togglePlugin");
         toggleBan = DeathSpecRecode.getInstance().getConfig().getBoolean("ban.toggleBan");
+        removePlayerFromBanlistOnRestart = DeathSpecRecode.getInstance().getConfig().getBoolean("plugin.removePlayerFromBanlistOnRestart");
 
         if(togglePlugin) {
             toggleDeathMessage = DeathSpecRecode.getInstance().getConfig().getBoolean("death.toggleDeathMessage", true);
@@ -60,14 +65,13 @@ public class Config {
         configReloadColor = DeathSpecRecode.getInstance().getConfig().getString("messages.configReloadColor", "#30ff36");
         configReloadMessage = DeathSpecRecode.getInstance().getConfig().getString("messages.configReload", "Config reloaded!");
 
-        zeroPlayerCount = DeathSpecRecode.getInstance().getConfig().getString("messages.zeroPlayerCount", "Player count must be greater than zero!");
-        zeroPlayerCountColor = DeathSpecRecode.getInstance().getConfig().getString("messages.zeroPlayerCountColor", "#ff3630");
-
         unbannedPlayer = DeathSpecRecode.getInstance().getConfig().getString("messages.unbannedPlayer", "Pardoned {playerName}!");
         unbannedPlayerColor = DeathSpecRecode.getInstance().getConfig().getString("messages.unbannedPlayerColor", "#30ff36");
 
         playerIsntBanned = DeathSpecRecode.getInstance().getConfig().getString("messages.playerIsntBanned", "{playerName} isn't banned!");
         playerIsntBannedColor = DeathSpecRecode.getInstance().getConfig().getString("messages.playerIsntBannedColor", "#ff3630");
 
+        listIsEmpty = DeathSpecRecode.getInstance().getConfig().getString("messages.listIsEmpty", "Banlist is empty!");
+        listIsEmptyColor = DeathSpecRecode.getInstance().getConfig().getString("messages.listIsEmptyColor", "#ff3630");
     }
 }

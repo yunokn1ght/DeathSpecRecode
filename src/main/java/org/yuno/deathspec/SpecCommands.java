@@ -4,14 +4,12 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import io.papermc.paper.ban.BanListType;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @CommandAlias("deathspec")
 public class SpecCommands extends BaseCommand {
@@ -24,7 +22,6 @@ public class SpecCommands extends BaseCommand {
 
         p.sendMessage(Component.text(Config.getConfigReloadMessage())
                 .color(TextColor.fromHexString(Config.getConfigReloadColor())));
-        p.sendMessage(Component.text("wekdfksdkf"));
     }
 
     @CommandPermission("deathspec.pardon")
@@ -54,16 +51,19 @@ public class SpecCommands extends BaseCommand {
                 DeathSpecRecode.getInstance().getLogger().info(bannedPlayer.getName() + " unbanned by" + p.getName());
             }
         } else {
+            if(DeathSpecRecode.getInstance().getConfig().getStringList("bannedPlayers").isEmpty()) {
+                p.sendMessage(Component.text(Config.getListIsEmpty()).color(TextColor.fromHexString(Config.getListIsEmptyColor())));
+                return;
+            }
+
+            ArrayList<String> banlist = (ArrayList<String>) DeathSpecRecode.getInstance().getConfig().getStringList("bannedPlayers");
             DeathSpecRecode.getInstance().getConfig().getStringList("bannedPlayers").forEach(playerName -> {
                 OfflinePlayer bannedPlayer = Bukkit.getOfflinePlayer(playerName);
-
-                ArrayList<String> banlist = (ArrayList<String>) DeathSpecRecode.getInstance().getConfig().getStringList("bannedPlayers");
                 banlist.remove(playerName);
-                DeathSpecRecode.getInstance().getConfig().set("bannedPlayers", banlist);
-                DeathSpecRecode.getInstance().saveConfig();
 
                 if(Bukkit.getBanList(BanListType.PROFILE).isBanned(bannedPlayer.getPlayerProfile())) {
                     Bukkit.getBanList(BanListType.PROFILE).pardon(bannedPlayer.getPlayerProfile());
+
                     String output = Config.getUnbannedPlayer().replace("{playerName}", playerName);
                     p.sendMessage(Component.text(output).color(TextColor.fromHexString(Config.getUnbannedPlayerColor())));
                 } else {
@@ -71,6 +71,9 @@ public class SpecCommands extends BaseCommand {
                     p.sendMessage(Component.text(output).color(TextColor.fromHexString(Config.getPlayerIsntBannedColor())));
                 } DeathSpecRecode.getInstance().getLogger().info(bannedPlayer.getName() + " unbanned by" + p.getName());
             });
+
+            DeathSpecRecode.getInstance().getConfig().set("bannedPlayers", banlist);
+            DeathSpecRecode.getInstance().saveConfig();
         }
     }
 }
