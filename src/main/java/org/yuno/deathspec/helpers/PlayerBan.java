@@ -1,10 +1,10 @@
 package org.yuno.deathspec.helpers;
 
+import io.papermc.paper.ban.BanListType;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -50,9 +50,9 @@ public class PlayerBan {
                 task.cancel();
 
                 String banReason = ChatColor.valueOf(Config.getBanReasonColor()) + Config.getBanReason();
-                Bukkit.getBanList(BanList.Type.NAME).addBan(
-                        p.getName(),
-                        banReason, null, null);
+                Bukkit.getBanList(BanListType.PROFILE).addBan(
+                        p.getPlayerProfile(),
+                        banReason, (Date) null, null);
 
 
                 p.kick(Component.text(banReason));

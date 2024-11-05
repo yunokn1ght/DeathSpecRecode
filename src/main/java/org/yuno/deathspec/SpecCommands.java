@@ -2,6 +2,7 @@ package org.yuno.deathspec;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
+import io.papermc.paper.ban.BanListType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import org.bukkit.BanList;
@@ -30,8 +31,10 @@ public class SpecCommands extends BaseCommand {
     @Subcommand("pardon")
     public void pardon(CommandSender p, @Single String target) {
         if (!target.equalsIgnoreCase("all")) {
-            if (Bukkit.getBanList(BanList.Type.NAME).isBanned(target)) {
-                Bukkit.getBanList(BanList.Type.NAME).pardon(target);
+            OfflinePlayer bannedPlayer = Bukkit.getOfflinePlayer(target);
+
+            if(Bukkit.getBanList(BanListType.PROFILE).isBanned(bannedPlayer.getPlayerProfile())) {
+                Bukkit.getBanList(BanListType.PROFILE).pardon(bannedPlayer.getPlayerProfile());
                 ArrayList<String> banlist = (ArrayList<String>) DeathSpecRecode.getInstance().getConfig().getStringList("bannedPlayers");
                 banlist.remove(target);
                 DeathSpecRecode.getInstance().getConfig().set("bannedPlayers", banlist);
@@ -67,8 +70,8 @@ public class SpecCommands extends BaseCommand {
                 OfflinePlayer bannedPlayer = Bukkit.getOfflinePlayer(playerName);
                 banlist.remove(playerName);
 
-                if(Bukkit.getBanList(BanList.Type.NAME).isBanned(playerName)) {
-                    Bukkit.getBanList(BanList.Type.NAME).pardon(playerName);
+                if(Bukkit.getBanList(BanListType.PROFILE).isBanned(bannedPlayer.getPlayerProfile())) {
+                    Bukkit.getBanList(BanListType.PROFILE).pardon(bannedPlayer.getPlayerProfile());
 
                     Component unbannedPlayerMessage = Config.getUnbannedPlayer();
                     unbannedPlayerMessage = unbannedPlayerMessage.replaceText(
@@ -95,7 +98,7 @@ public class SpecCommands extends BaseCommand {
         List<String> banlist = DeathSpecRecode.getInstance().getConfig().getStringList("bannedPlayers");
         if(!banlist.isEmpty()) for (Iterator<String> iterator = banlist.iterator(); iterator.hasNext();) { // i also dont know why this doesnt work
             String playerName = iterator.next();
-            if (!Bukkit.getBanList(BanList.Type.NAME).isBanned(playerName)) {
+            if (!Bukkit.getBanList(BanListType.PROFILE).isBanned(Bukkit.getOfflinePlayer(playerName).getPlayerProfile())) {
                 iterator.remove();
                 if(!p.getName().equals("CONSOLE")) DeathSpecRecode.getInstance().getLogger().info("Deleted " + playerName + " from banlist!");
                 p.sendMessage(Component.text("Removed " + playerName + " from banlist!")
