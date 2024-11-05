@@ -4,9 +4,9 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Subcommand;
-import io.papermc.paper.ban.BanListType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -23,8 +23,8 @@ public class TestCommands extends BaseCommand {
     @Subcommand("ban")
     public void ban(Player p, String target) {
         String banReason = ChatColor.valueOf(Config.getBanReasonColor()) + Config.getBanReason();
-        Bukkit.getBanList(BanListType.PROFILE).addBan(
-                Bukkit.getOfflinePlayer(target).getPlayerProfile(),
+        Bukkit.getBanList(BanList.Type.NAME).addBan(
+                target,
                 banReason, (Date) null, null);
 
 
@@ -75,9 +75,9 @@ public class TestCommands extends BaseCommand {
         for (int i = 0; i < count; i++) {
             bannedPlayers.add("test" + i);
             String banReason = ChatColor.valueOf(Config.getBanReasonColor()) + Config.getBanReason();
-            Bukkit.getBanList(BanListType.PROFILE).addBan(
-                    Bukkit.getOfflinePlayer("test" + 1).getPlayerProfile(),
-                    banReason, (Date) null, null);
+            Bukkit.getBanList(BanList.Type.NAME).addBan(
+                    "test" + 1,
+                    banReason, null, null);
         }
 
         DeathSpecRecode.getInstance().getConfig().set("bannedPlayers", bannedPlayers);

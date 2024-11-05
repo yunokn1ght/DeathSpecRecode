@@ -15,6 +15,7 @@ public class AutoTypeChoose {
         }
     }
 
+    @Deprecated
     public static void sendMessage(String message, int type, Player player) {
         switch(type) {
             case 0: player.sendMessage(message); break;

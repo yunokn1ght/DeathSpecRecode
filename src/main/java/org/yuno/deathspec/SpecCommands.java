@@ -2,12 +2,12 @@ package org.yuno.deathspec;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
-import io.papermc.paper.ban.BanListType;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.TextReplacementConfig;
+import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,43 +18,47 @@ public class SpecCommands extends BaseCommand {
 
     @CommandPermission("deathspec.reload")
     @Subcommand("reload")
-    public void reload(Player p) {
+    public void reload(CommandSender p) {
         DeathSpecRecode.getInstance().reloadConfig();
         new Config().ConfigCheck();
 
-        p.sendMessage(Component.text(Config.getConfigReloadMessage())
-                .color(TextColor.fromHexString(Config.getConfigReloadColor())));
+        Component configReloadMessage = Config.getConfigReloadMessage();
+        p.sendMessage(configReloadMessage);
     }
 
     @CommandPermission("deathspec.pardon")
     @Subcommand("pardon")
-    public void pardon(Player p, @Single String target) {
+    public void pardon(CommandSender p, @Single String target) {
         if (!target.equalsIgnoreCase("all")) {
-            OfflinePlayer bannedPlayer = Bukkit.getOfflinePlayer(target);
-
-            if (Bukkit.getBanList(BanListType.PROFILE).isBanned(bannedPlayer.getPlayerProfile())) {
-                Bukkit.getBanList(BanListType.PROFILE).pardon(bannedPlayer.getPlayerProfile());
+            if (Bukkit.getBanList(BanList.Type.NAME).isBanned(target)) {
+                Bukkit.getBanList(BanList.Type.NAME).pardon(target);
                 ArrayList<String> banlist = (ArrayList<String>) DeathSpecRecode.getInstance().getConfig().getStringList("bannedPlayers");
                 banlist.remove(target);
                 DeathSpecRecode.getInstance().getConfig().set("bannedPlayers", banlist);
                 DeathSpecRecode.getInstance().saveConfig();
 
-                String output = Config.getUnbannedPlayer().replace("{playerName}", target);
-                p.sendMessage(Component.text(output).color(TextColor.fromHexString(Config.getUnbannedPlayerColor())));
-                DeathSpecRecode.getInstance().getLogger().info(bannedPlayer.getName() + " unbanned by" + p.getName());
+
+                Component unbannedPlayerMessage = Config.getUnbannedPlayer();
+                unbannedPlayerMessage = unbannedPlayerMessage.replaceText(
+                        TextReplacementConfig.builder().matchLiteral("{playerName}")
+                                .replacement(target).build());
+                p.sendMessage(unbannedPlayerMessage);
             } else {
                 ArrayList<String> banlist = (ArrayList<String>) DeathSpecRecode.getInstance().getConfig().getStringList("bannedPlayers");
                 banlist.remove(target);
                 DeathSpecRecode.getInstance().getConfig().set("bannedPlayers", banlist);
                 DeathSpecRecode.getInstance().saveConfig();
 
-                String output = Config.getPlayerIsntBanned().replace("{playerName}", target);
-                p.sendMessage(Component.text(output).color(TextColor.fromHexString(Config.getPlayerIsntBannedColor())));
-                DeathSpecRecode.getInstance().getLogger().info(bannedPlayer.getName() + " unbanned by" + p.getName());
-            }
+                Component playerIsntBannedMessage = Config.getPlayerIsntBanned();
+                playerIsntBannedMessage = playerIsntBannedMessage.replaceText(
+                        TextReplacementConfig.builder().matchLiteral("{playerName}")
+                                .replacement(target).build());
+                p.sendMessage(playerIsntBannedMessage);
+            } if(!p.getName().equals("CONSOLE")) DeathSpecRecode.getInstance().getLogger().info(target + " unbanned by " + p.getName());
         } else {
             if(DeathSpecRecode.getInstance().getConfig().getStringList("bannedPlayers").isEmpty()) {
-                p.sendMessage(Component.text(Config.getListIsEmpty()).color(TextColor.fromHexString(Config.getListIsEmptyColor())));
+                Component listIsEmptyMessage = Config.getListIsEmpty();
+                p.sendMessage(listIsEmptyMessage);
                 return;
             }
 
@@ -63,15 +67,21 @@ public class SpecCommands extends BaseCommand {
                 OfflinePlayer bannedPlayer = Bukkit.getOfflinePlayer(playerName);
                 banlist.remove(playerName);
 
-                if(Bukkit.getBanList(BanListType.PROFILE).isBanned(bannedPlayer.getPlayerProfile())) {
-                    Bukkit.getBanList(BanListType.PROFILE).pardon(bannedPlayer.getPlayerProfile());
+                if(Bukkit.getBanList(BanList.Type.NAME).isBanned(playerName)) {
+                    Bukkit.getBanList(BanList.Type.NAME).pardon(playerName);
 
-                    String output = Config.getUnbannedPlayer().replace("{playerName}", playerName);
-                    p.sendMessage(Component.text(output).color(TextColor.fromHexString(Config.getUnbannedPlayerColor())));
+                    Component unbannedPlayerMessage = Config.getUnbannedPlayer();
+                    unbannedPlayerMessage = unbannedPlayerMessage.replaceText(
+                            TextReplacementConfig.builder().matchLiteral("{playerName}")
+                                    .replacement(playerName).build());
+                    p.sendMessage(unbannedPlayerMessage);
                 } else {
-                    String output = Config.getPlayerIsntBanned().replace("{playerName}", playerName);
-                    p.sendMessage(Component.text(output).color(TextColor.fromHexString(Config.getPlayerIsntBannedColor())));
-                } DeathSpecRecode.getInstance().getLogger().info(bannedPlayer.getName() + " unbanned by" + p.getName());
+                    Component playerIsntBannedMessage = Config.getPlayerIsntBanned();
+                    playerIsntBannedMessage = playerIsntBannedMessage.replaceText(
+                            TextReplacementConfig.builder().matchLiteral("{playerName}")
+                                    .replacement(playerName).build());
+                    p.sendMessage(playerIsntBannedMessage);
+                } if(!p.getName().equals("CONSOLE")) DeathSpecRecode.getInstance().getLogger().info(bannedPlayer.getName() + " unbanned by " + p.getName());
             });
 
             DeathSpecRecode.getInstance().getConfig().set("bannedPlayers", banlist);
@@ -81,17 +91,22 @@ public class SpecCommands extends BaseCommand {
 
     @CommandPermission("deathspec.check")
     @Subcommand("check")
-    public void check(Player p) {
+    public void check(CommandSender p) {
         List<String> banlist = DeathSpecRecode.getInstance().getConfig().getStringList("bannedPlayers");
-        if(!banlist.isEmpty()) for (Iterator<String> iterator = banlist.iterator(); iterator.hasNext();) {
+        if(!banlist.isEmpty()) for (Iterator<String> iterator = banlist.iterator(); iterator.hasNext();) { // i also dont know why this doesnt work
             String playerName = iterator.next();
-            if (!Bukkit.getBanList(BanListType.PROFILE).isBanned(Bukkit.getOfflinePlayer(playerName).getPlayerProfile())) {
+            if (!Bukkit.getBanList(BanList.Type.NAME).isBanned(playerName)) {
                 iterator.remove();
-                DeathSpecRecode.getInstance().getLogger().info("Deleted " + playerName + " from banlist!");
+                if(!p.getName().equals("CONSOLE")) DeathSpecRecode.getInstance().getLogger().info("Deleted " + playerName + " from banlist!");
+                p.sendMessage(Component.text("Removed " + playerName + " from banlist!")
+                        .color(Config.getUnbannedPlayer().color()));
 
                 DeathSpecRecode.getInstance().getConfig().set("bannedPlayers", banlist);
                 DeathSpecRecode.getInstance().saveConfig();
             }
+        } else {
+            Component listIsEmptyMessage = Config.getListIsEmpty();
+            p.sendMessage(listIsEmptyMessage);
         }
     }
 }

@@ -14,8 +14,10 @@ ban:
   banReason: "You're lost!" # Reason of ban
   banReasonColor: "GOLD" # Reason's color (used org.bukkit.ChatColor)
 
-plugin:
+experimental:
   removePlayerFromBanlistOnRestart: true # Remove players from banlist if they aren't banned?
+  testCommands: false # Are test commands enabled?
+  banMessageUsingBossbar: false
 
 messages:
   noPermission: "You dont have enough permissions!"
@@ -32,7 +34,6 @@ messages:
 
   listIsEmpty: "Banlist is empty!"
   listIsEmptyColor: "#ff3630"
-
 
 bannedPlayers:
   - "Notch"

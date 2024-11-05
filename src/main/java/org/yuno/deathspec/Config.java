@@ -1,43 +1,54 @@
 package org.yuno.deathspec;
 
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
+
+import java.util.ArrayList;
 
 public class Config {
 
     // TODO: Replace this SHIT with ConfigAPI. It is necessary, but, kinda good
 
+
+    // Death category
     @Getter private static boolean togglePlugin;
     @Getter private static boolean toggleDeathMessage;
     @Getter private static int deathMessageType;
     @Getter private static String deathMessage;
     @Getter private static String deathMessageColor;
 
+    // Ban category
     @Getter private static boolean toggleBan;
     @Getter private static int banTime;
-    @Getter private static String banMessage;
+    @Getter private static Component banMessage;
     @Getter private static int banMessageType;
-    @Getter private static String banMessageColor;
     @Getter private static String banReason;
     @Getter private static String banReasonColor;
 
-    @Getter private static String noPermissionMessage;
-    @Getter private static String noPermissionColor;
-    @Getter private static String configReloadMessage;
-    @Getter private static String configReloadColor;
-    @Getter private static String unbannedPlayer;
-    @Getter private static String unbannedPlayerColor;
-    @Getter private static String playerIsntBanned;
-    @Getter private static String playerIsntBannedColor;
-    @Getter private static String listIsEmpty;
-    @Getter private static String listIsEmptyColor;
+    // Messages category
+    @Getter private static Component noPermissionMessage;
+    @Getter private static Component configReloadMessage;
+    @Getter private static Component unbannedPlayer;
+    @Getter private static Component playerIsntBanned;
+    @Getter private static Component listIsEmpty;
 
+    // Experimental category
     @Getter private static boolean removePlayerFromBanlistOnRestart;
+    @Getter private static boolean testCommandsEnabled;
+    @Getter private static boolean banMessageUsingBossbar;
 
 
     public void ConfigCheck() {
+        ArrayList<Boolean> experimentalFeatures = new ArrayList<>();
+
         togglePlugin = DeathSpecRecode.getInstance().getConfig().getBoolean("death.togglePlugin");
         toggleBan = DeathSpecRecode.getInstance().getConfig().getBoolean("ban.toggleBan");
-        removePlayerFromBanlistOnRestart = DeathSpecRecode.getInstance().getConfig().getBoolean("plugin.removePlayerFromBanlistOnRestart");
+
+        removePlayerFromBanlistOnRestart = DeathSpecRecode.getInstance().getConfig().getBoolean("experimental.removePlayerFromBanlistOnRestart");
+        testCommandsEnabled = DeathSpecRecode.getInstance().getConfig().getBoolean("experimental.testCommands");
+        experimentalFeatures.add(removePlayerFromBanlistOnRestart);
+        experimentalFeatures.add(testCommandsEnabled);
 
         if(togglePlugin) {
             toggleDeathMessage = DeathSpecRecode.getInstance().getConfig().getBoolean("death.toggleDeathMessage", true);
@@ -50,28 +61,36 @@ public class Config {
 
         if(toggleBan) {
             banTime = DeathSpecRecode.getInstance().getConfig().getInt("ban.banTime", 8);
-            banMessage = DeathSpecRecode.getInstance().getConfig().getString("ban.banMessage", "You'll be banned in {time} seconds");
+            banMessage = Component.text(DeathSpecRecode.getInstance().getConfig().getString("ban.banMessage", "You'll be banned in {time} seconds"))
+                    .color(TextColor.fromHexString(DeathSpecRecode.getInstance().getConfig().getString("ban.banMessageColor", "#FF5733")));
+
             banMessageType = DeathSpecRecode.getInstance().getConfig().getInt("ban.banMessageType", 1);
-            banMessageColor = DeathSpecRecode.getInstance().getConfig().getString("ban.banMessageColor", "#FF5733");
             banReason = DeathSpecRecode.getInstance().getConfig().getString("ban.banReason", "You're lost!");
             banReasonColor = DeathSpecRecode.getInstance().getConfig().getString("ban.banReasonColor", "ff3030");
+
+            banMessageUsingBossbar = DeathSpecRecode.getInstance().getConfig().getBoolean("experimental.banMessageUsingBossbar", false);
+            experimentalFeatures.add(banMessageUsingBossbar);
         } else {
             DeathSpecRecode.getInstance().getLogger().warning("You have disabled toggleBan, this means you won't be banned when you die.");
         }
 
-        noPermissionMessage = DeathSpecRecode.getInstance().getConfig().getString("messages.noPermissionMessage", "You don't have permission to do that!");
-        noPermissionColor = DeathSpecRecode.getInstance().getConfig().getString("messages.noPermissionColor", "#ff3630");
+        noPermissionMessage = Component.text(DeathSpecRecode.getInstance().getConfig().getString("messages.noPermissionMessage", "You don't have permission to do that!"))
+                .color(TextColor.fromHexString(DeathSpecRecode.getInstance().getConfig().getString("messages.noPermissionColor", "#ff3630")));
 
-        configReloadColor = DeathSpecRecode.getInstance().getConfig().getString("messages.configReloadColor", "#30ff36");
-        configReloadMessage = DeathSpecRecode.getInstance().getConfig().getString("messages.configReload", "Config reloaded!");
+        configReloadMessage = Component.text(DeathSpecRecode.getInstance().getConfig().getString("messages.configReload", "Config reloaded!"))
+                .color(TextColor.fromHexString(DeathSpecRecode.getInstance().getConfig().getString("messages.configReloadColor", "#30ff36")));
 
-        unbannedPlayer = DeathSpecRecode.getInstance().getConfig().getString("messages.unbannedPlayer", "Pardoned {playerName}!");
-        unbannedPlayerColor = DeathSpecRecode.getInstance().getConfig().getString("messages.unbannedPlayerColor", "#30ff36");
+        unbannedPlayer = Component.text(DeathSpecRecode.getInstance().getConfig().getString("messages.unbannedPlayer", "Pardoned {playerName}!"))
+                .color(TextColor.fromHexString(DeathSpecRecode.getInstance().getConfig().getString("messages.unbannedPlayerColor", "#30ff36")));
 
-        playerIsntBanned = DeathSpecRecode.getInstance().getConfig().getString("messages.playerIsntBanned", "{playerName} isn't banned!");
-        playerIsntBannedColor = DeathSpecRecode.getInstance().getConfig().getString("messages.playerIsntBannedColor", "#ff3630");
+        playerIsntBanned = Component.text(DeathSpecRecode.getInstance().getConfig().getString("messages.playerIsntBanned", "{playerName} isn't banned!"))
+                .color(TextColor.fromHexString(DeathSpecRecode.getInstance().getConfig().getString("messages.playerIsntBannedColor", "#ff3630")));
 
-        listIsEmpty = DeathSpecRecode.getInstance().getConfig().getString("messages.listIsEmpty", "Banlist is empty!");
-        listIsEmptyColor = DeathSpecRecode.getInstance().getConfig().getString("messages.listIsEmptyColor", "#ff3630");
+        listIsEmpty = Component.text(DeathSpecRecode.getInstance().getConfig().getString("messages.listIsEmpty", "Banlist is empty!"))
+                .color(TextColor.fromHexString(DeathSpecRecode.getInstance().getConfig().getString("messages.listIsEmptyColor", "#ff3630")));
+
+        if(experimentalFeatures.stream().anyMatch(feature -> feature)) {
+            DeathSpecRecode.getInstance().getLogger().warning("You have enabled experimental features, this means that plugin may not work properly.");
+        }
     }
 }
