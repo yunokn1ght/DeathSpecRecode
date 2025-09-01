@@ -18,7 +18,7 @@ public class PlayerBan {
 
 
     public void banPlayer(Player p) {
-        int[] timer = {8};
+        int[] timer = {Config.getBanTime()};
         BossBar bossbar;
 
         if(Config.isBanMessageUsingBossbar()) {
